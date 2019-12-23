@@ -34,8 +34,11 @@ public class ManipuladorObjeto  {
                         //File>Settings(Alt+Ctrl+S)>Build, Execution, Deployment>Compiler>Java Compiler
                         //Campo "Additional command line parameters:" :
                         //  ► "-parameters" (digitado)
-                        params.keySet().contains(arg.getName()) &&
-                        params.get(arg.getName()).getClass().equals(arg.getType())
+                            {
+                                System.out.println(arg.getName());
+                                return params.keySet().contains(arg.getName()) &&
+                                        params.get(arg.getName()).getClass().equals(arg.getType());
+                            }
                     )
             ).findFirst().orElseThrow(()->new RuntimeException());
         return new ManipuladorMetodo(instancia, selecionado, params);

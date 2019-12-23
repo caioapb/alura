@@ -2,13 +2,13 @@ package reflection.pt2.dto;
 
 import reflection.pt2.annotations.NomeTagXml;
 
-@NomeTagXml("product")
-public class Produto {
-    @NomeTagXml("name")
+@NomeTagXml("Product")
+public class Produto extends SuperProduto{
+    @NomeTagXml("Name")
     private String nome;
-    @NomeTagXml("value")
+    @NomeTagXml("Value")
     private double valor;
-    @NomeTagXml("brand")
+    @NomeTagXml("Brand")
     private String marca;
 
     public Produto(String nome, double valor, String marca) {

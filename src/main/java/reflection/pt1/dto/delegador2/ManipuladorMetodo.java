@@ -5,12 +5,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 public class ManipuladorMetodo {
     private Object instancia;
     private Method metodo;
     private  Map<String, Object> params = null;
+    private BiFunction<Method, InvocationTargetException, Object> tratamentoExcecao;
 
     public ManipuladorMetodo(Object instancia, Method metodo) {
         this.instancia = instancia;
@@ -33,8 +35,21 @@ public class ManipuladorMetodo {
             e.printStackTrace();
             throw new RuntimeException();
         } catch (InvocationTargetException e) {
+            // tratamento especial e customizado da exceção.
+            if (tratamentoExcecao != null) {
+                return tratamentoExcecao.apply(metodo, e);
+            }
+
             e.printStackTrace();
             throw new RuntimeException("Erro no metodo");
         }
     }
+
+    public ManipuladorMetodo comTratamentoDeExcecao
+            (BiFunction<Method, InvocationTargetException, Object> tratamentoExcecao) {
+        this.tratamentoExcecao = tratamentoExcecao;
+        return this;
+    }
+
+
 }
