@@ -7,19 +7,16 @@ import java.lang.reflect.InvocationTargetException;
 public class Conversor {
 
     public static Object identificaEConverte(String var) {
-       if (var.trim().matches("[0-9]")) {
-           return Geral.coalesce(
-               tryValueOf(var, Integer.class),
-               tryValueOf(var, Float.class),
-               tryValueOf(var, Double.class),
-               tryValueOf(var, Long.class),
-               var
-            );
-       }
-       return var;
+       return Geral.coalesce(
+           tryValueOf(var, Integer.class),
+           tryValueOf(var, Float.class),
+           tryValueOf(var, Double.class),
+           tryValueOf(var, Long.class),
+           var
+        );
     }
 
-    private static Object tryValueOf(String var, Class<?> numero) {
+    public static Object tryValueOf(String var, Class<?> numero) {
         try {
             return numero.getMethod("valueOf",String.class).invoke(null,var);
         } catch (IllegalAccessException e) {

@@ -1,13 +1,12 @@
 package reflection.pt1;
 
 import generico.Geral;
-import reflection.pt1.dto.cliente.ClienteController;
-import reflection.pt1.dto.produto.ProdutoController;
+import reflection.pt1.produto.ProdutoController;
 
 import java.rmi.server.ExportException;
 
 public class MainReflectionPt1 {
-    static final String pacoteBase = "reflection.pt1.dto.";
+    static final String pacoteBase = "reflection.pt1.";
     public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         String path = "/produto/1";
 //        semReflection(path); //ruim
@@ -26,19 +25,6 @@ public class MainReflectionPt1 {
                             break;
                         case "lista":
                             pc.lista();
-                            break;
-                    }
-                }
-                break;
-            case "cliente":
-                ClienteController cc = new ClienteController();
-                if (subPath.length>=2) {
-                    switch (subPath[1]) {
-                        case "filtro":
-//                            cc.filtra();
-                            break;
-                        case "lista":
-//                            cc.lista();
                             break;
                     }
                 }

@@ -5,34 +5,35 @@ import generico.Geral;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Scanner;
 
-public class MainReflectionPt3 {
-    static final String pacoteBase = "reflection.pt1.dto.";
-    public static void main(String args[]) {
-        // preferencia em usar o produto
-        try (Scanner scanner = new Scanner(System.in)) {
-            String path = scanner.nextLine(); //ex: /produto/filtra
-            comReflection(path);
-        }
+public class ReflectionPt3 {
+
+    private String base;
+
+    public ReflectionPt3(String base) {
+        this.base = base;
     }
 
-    public static void comReflection(String path) {
+    public ReflectionPt3() {
+        this.base = "reflection.pt1";
+    }
+
+    public Object executa(String path) {
         String partesUrl[] = path.replaceFirst("/", "").split("/");
         String nomeClasse = partesUrl[0];
         String metodo = partesUrl[1];
         String nomeController = Geral.capitalize(nomeClasse)+"Controller";
         //instancias de classe
         try {
-            Class<?> classController = Class.forName(pacoteBase+nomeClasse+"."+ nomeController);
+            Class<?> classController = Class.forName(base + "." + nomeClasse + "." + nomeController);
             Constructor<?> constructorController = classController.getDeclaredConstructor();
             Constructor<?> constructorControllerParam = classController.getDeclaredConstructor(String.class);
             constructorControllerParam.setAccessible(true);// permite executar o construtor mesmo sendo privado
             Method method = classController.getMethod(metodo);
-            Object invoked = method.invoke(constructorController.newInstance());
+            return method.invoke(constructorController.newInstance());
         } catch (ClassNotFoundException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException e) {
             e.printStackTrace();
+            throw new RuntimeException();
         }
-
     }
 }

@@ -1,6 +1,10 @@
-package reflection.pt1.dto.delegador3;
+package reflection.pt2.produto;
 
 import reflection.pt1.dto.Conversor;
+import reflection.pt1.dto.delegador2.ManipuladorObjeto;
+import reflection.pt1.dto.delegador2.Reflexao;
+import reflection.pt1.dto.delegador3.Request;
+import reflection.pt2.produto.ioc.ContainerIoC;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -27,15 +31,14 @@ public class ExecutePath {
     public Object getter(String path)  {
         Method selecionado = null;
         try {
-            Request request = new Request(base, path);
-            Constructor<?> constructor = Class.forName(request.getCaminhoCompleto()).getDeclaredConstructor();
-            Object instancia = constructor.newInstance();
+            Request request = new Request(base, path);                   //Classe Controller
+            Object instanciaController = new ContainerIoC().getInstancia(Class.forName(request.getCaminhoCompleto()));
             if (request.hasMetodo()) {
-                selecionado = getMetodo(instancia, request.getNomeMetodo(), request.getQueryParams());
-                return invoca(instancia, selecionado, request.getQueryParams());
+                selecionado = getMetodo(instanciaController, request.getNomeMetodo(), request.getQueryParams());
+                return invoca(instanciaController, selecionado, request.getQueryParams());
             }
-            return instancia;
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            return instanciaController;
+        } catch (ClassNotFoundException | IllegalAccessException e) {
             e.printStackTrace();
             throw new RuntimeException();
         } catch (InvocationTargetException e) {

@@ -1,4 +1,4 @@
-package reflection.pt2.produto;
+package reflection.pt2.produto2;
 
 import reflection.pt2.produto.dao.ProdutoDaoMock;
 import reflection.pt2.produto.dto.Produto;
@@ -6,16 +6,16 @@ import reflection.pt2.produto.dto.Produto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ProdutoController {
+public class Produto2Controller {
 
     private ProdutoDaoMock produtoDao;
 
-    public ProdutoController(ProdutoDaoMock produtoDao) {
+    public Produto2Controller(ProdutoDaoMock produtoDao) {
         this.produtoDao = produtoDao;
     }
 
     //construtor de exemplo
-    public ProdutoController(String string) {
+    public Produto2Controller(String string) {
         System.out.println(string);
     }
 

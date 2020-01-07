@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Scanner;
 
 public class MainReflectionPt2 {
-    static final String pacoteBase = "reflection.pt1.dto.";
+    static final String pacoteBase = "reflection.pt1";
     public static void main(String args[]) {
         // preferencia em usar o produto
         try (Scanner scanner = new Scanner(System.in)) {
@@ -23,7 +23,7 @@ public class MainReflectionPt2 {
         String nomeController = Geral.capitalize(nomeClasse)+"Controller";
         //instancias de classe
         try {
-            Class<?> classController = Class.forName(pacoteBase+nomeClasse+"."+ nomeController);
+            Class<?> classController = Class.forName(pacoteBase+"."+nomeClasse+"."+ nomeController);
             Object instanciaController = classController.newInstance(); // nao é legal de ser usado
             Method method = classController.getMethod(metodo);
             Object invoked = method.invoke(instanciaController);

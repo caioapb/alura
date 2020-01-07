@@ -7,14 +7,13 @@ import java.util.Collection;
 
 public class ConversorXML {
     public String converte(Object obj) {
-        Class<?> classe = obj.getClass();
         StringBuilder sb = new StringBuilder();
         if (obj instanceof Collection) {
             sb.append("<lista>\n");
             ((Collection) obj).forEach(o-> {
                 sb.append(xmlFields(o));
             });
-            sb.append("<\\lista>");
+            sb.append("</lista>");
         } else {
             sb.append(xmlFields(obj));
         }
@@ -32,10 +31,10 @@ public class ConversorXML {
                 f.setAccessible(true);
                 NomeTagXml ntxAttr = f.getDeclaredAnnotation(NomeTagXml.class);
                 String nomeAtributo = ntxAttr==null?f.getName():ntxAttr.value();
-                sb.append("<").append(nomeAtributo).append(">").append(f.get(obj)).append("<\\")
+                sb.append("<").append(nomeAtributo).append(">").append(f.get(obj)).append("</")
                         .append(nomeAtributo).append(">");
             }
-            sb.append("<\\").append(nomeClasse).append(">\n");
+            sb.append("</").append(nomeClasse).append(">\n");
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             sb.append("<Erro>").append(e.getMessage()).append("</Erro>\n");

@@ -23,7 +23,7 @@ public class Request {
         this.caminhoCompleto = base+"."+controleEMetodo[0]+"."+ this.nomeControle;
 
         this.queryParams = new HashMap<>();
-        if (controleEMetodo.length>1) {
+        if (partesUrl.length>1) {
             String partesParam[] = partesUrl[1].split("&");
             for(String eachParam:partesParam) {
                 String[] chaveEValor = eachParam.split("=");
@@ -42,6 +42,10 @@ public class Request {
 
     public String getNomeMetodo() {
         return nomeMetodo;
+    }
+
+    public Boolean hasMetodo() {
+        return nomeMetodo!=null&&nomeMetodo.length()>0;
     }
 
     public String getCaminhoCompleto() {

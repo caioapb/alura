@@ -1,14 +1,8 @@
-package reflection.pt2.dto;
+package reflection.pt1.produto.dto;
 
-import reflection.pt2.annotations.NomeTagXml;
-
-@NomeTagXml("Product")
-public class Produto extends SuperProduto{
-    @NomeTagXml("Name")
+public class Produto extends SuperProduto {
     private String nome;
-    @NomeTagXml("Value")
     private double valor;
-    @NomeTagXml("Brand")
     private String marca;
 
     public Produto(String nome, double valor, String marca) {
@@ -39,5 +33,10 @@ public class Produto extends SuperProduto{
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    @Override
+    public String toString() {
+        return "[Id="+"{}, Nome="+this.nome+", Marca="+this.marca+", Valor="+this.valor+"]";
     }
 }

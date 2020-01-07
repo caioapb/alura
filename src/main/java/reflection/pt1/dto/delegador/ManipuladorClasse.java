@@ -29,4 +29,9 @@ public class ManipuladorClasse extends Manipulador {
         Object instancia = getConstrutor().invoca();
         return new ManipuladorObjeto(instancia);
     }
+
+    public ManipuladorObjeto invocaInstancia(Object... params) {
+        Object instancia = getConstrutor(params).invoca();
+        return new ManipuladorObjeto(instancia);
+    }
 }
