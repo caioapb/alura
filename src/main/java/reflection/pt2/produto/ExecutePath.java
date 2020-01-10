@@ -1,12 +1,9 @@
 package reflection.pt2.produto;
 
 import reflection.pt1.dto.Conversor;
-import reflection.pt1.dto.delegador2.ManipuladorObjeto;
-import reflection.pt1.dto.delegador2.Reflexao;
 import reflection.pt1.dto.delegador3.Request;
 import reflection.pt2.produto.ioc.ContainerIoC;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

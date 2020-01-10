@@ -1,6 +1,5 @@
 package reflection.pt1.produto;
 
-import reflection.experiencia.annotations.PathVariable;
 import reflection.pt1.produto.dao.ProdutoDaoMock;
 import reflection.pt1.produto.dto.Produto;
 
@@ -29,7 +28,7 @@ public class ProdutoController {
     public List<Produto> lista() {return produtoDao.lista();}
 
     //com parametro
-    public List<Produto> lista(@PathVariable("autor") String parametro) {
+    public List<Produto> lista(String parametro) {
         return produtoDao.lista().stream().filter(p->p.getNome().equals(parametro))
             .collect(Collectors.toList());
     }

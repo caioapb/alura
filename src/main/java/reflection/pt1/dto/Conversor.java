@@ -18,6 +18,7 @@ public class Conversor {
 
     public static Object tryValueOf(String var, Class<?> numero) {
         try {
+            // Metodo estatico
             return numero.getMethod("valueOf",String.class).invoke(null,var);
         } catch (IllegalAccessException e) {
         } catch (InvocationTargetException e) {

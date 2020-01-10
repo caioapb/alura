@@ -25,11 +25,11 @@ public class ProdutoController {
     //com parametro
     public List<Produto> lista(String parametro) {
         return produtoDao.lista().stream().filter(p->p.getNome().equals(parametro))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
     public List<Produto> lista(String parametro, Integer numero) {
         return produtoDao.lista().stream().filter(p->p.getNome().equals(parametro) && p.getValor()==numero)
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     public Produto getProduto() {
