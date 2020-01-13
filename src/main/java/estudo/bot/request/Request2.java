@@ -6,7 +6,7 @@ import generico.Geral;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Request {
+public class Request2 {
 
     private String caminhoCompleto;
     private String nomeController;
@@ -15,7 +15,7 @@ public class Request {
     private Map<String,Object> queryParams = new HashMap<>();
     private Map<String,Object> queryArgs = new HashMap<>();
 
-    public Request(String base, String plataforma, String url) {
+    public Request2(String base, String plataforma, String url) {
         // /{controller}/{method}?{nomeParam1}={param1},{nomeParam2}={param2},{nomeParam3}={param3}..
         base = base.replaceAll("/",".");
         this.plataforma = plataforma;

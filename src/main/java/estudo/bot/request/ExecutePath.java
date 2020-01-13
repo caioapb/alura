@@ -14,7 +14,16 @@ import java.util.stream.Stream;
 
 public class ExecutePath {
 
-    private static Method getMetodo(Object instancia, String nomeMetodo, Request request) {
+    public static Object executa(Request request) throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+        Constructor<?>  constructor     = Class.forName(request.getCaminhoCompleto()).getDeclaredConstructor();
+        Object          instController  = constructor.newInstance();//por o containerIOC
+        Method          method          = getMetodo(instController, request);
+//        return invoca(instController, method, request.getQueryArgs());
+        return invoca(instController, method, request);
+    }
+
+    private static Method getMetodo(Object instancia, Request request) {
+        String nomeMetodo = request.getNomeMetodo();
         Stream<Method> streamMetodos = Stream.of(instancia.getClass().getDeclaredMethods());
         return streamMetodos.filter(
             metodo ->
@@ -30,8 +39,7 @@ public class ExecutePath {
                             {
                                 try {
                                     //-- Params são os parâmetros passados, args são os parâmetros do metodo analisado
-                                    TrataParam trataParam = new TrataParam(arg);
-                                    trataParam.setArgValue(request.getQueryParam(trataParam.getNomeArg()));
+                                    TrataParam trataParam = new TrataParam(arg, request);
                                     request.putArg(trataParam.getNomeArg(), trataParam.getParam());
                                     return request.getQueryParams().keySet().contains(trataParam.getNomeArg()) &&
                                         (
@@ -48,7 +56,7 @@ public class ExecutePath {
                                                     trataParam.getClassArg()) != null
                                         );
                                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
-                                        ClassNotFoundException e) {
+                                    ClassNotFoundException e) {
                                     return false;
                                 }
                             }
@@ -56,23 +64,17 @@ public class ExecutePath {
         ).findFirst().orElseThrow(() -> new RuntimeException());
     }
 
-    public static Object executa(Request request) throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
-        Constructor<?>  constructor     = Class.forName(request.getCaminhoCompleto()).getDeclaredConstructor();
-        Object          instController  = constructor.newInstance();//por o containerIOC
-        Method          method          = getMetodo(instController, request.getNomeMetodo(), request);
-//        return invoca(instController, method, request.getQueryArgs());
-        return invoca(instController, method, request);
-    }
-
     private static Object invoca(Object instancia, Method method, Request request) throws InvocationTargetException, IllegalAccessException {
         List<Object> paramsMetodo = new ArrayList<>();
         Stream.of(method.getParameters())
             .forEach(arg->{
                 try {
-                    TrataParam trataParam = new TrataParam(arg);
+                    TrataParam trataParam = new TrataParam(arg, request);
                     String nomeArg = Geral.coalesce2((String) trataParam.getMapParam().get("alias"), arg.getName());
                     paramsMetodo.add(request.getQueryArgs().get(nomeArg));
                 } catch (InvocationTargetException | IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             });

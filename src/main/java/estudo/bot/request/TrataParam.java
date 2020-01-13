@@ -1,8 +1,8 @@
 package estudo.bot.request;
 
-import estudo.bot.request.annotations.RequestMethod;
+import com.sun.corba.se.impl.io.TypeMismatchException;
 import estudo.bot.request.annotations.RequestParam;
-import estudo.bot.telegram.TelegramParam;
+import estudo.bot.request.annotations.RequestPlataforma;
 import generico.Geral;
 
 import java.lang.annotation.Annotation;
@@ -26,18 +26,27 @@ public class TrataParam {
     private Object argValue;
 //    private RequestParam requestParam;
     private HashMap<String, Object> mapParam = new HashMap<>();
-    private RequestMethod requestMethod;
 
-    public TrataParam(Parameter arg) throws InvocationTargetException, IllegalAccessException {
+    public TrataParam(Parameter arg, Request request) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, ClassNotFoundException {
         this.arg = arg;
 
-        for(Annotation curAnnotation : arg.getAnnotations()) {
+        for(Annotation curAnnotation: arg.getDeclaringExecutable().getDeclaredAnnotations()) {
+            RequestPlataforma requestMethod = curAnnotation.annotationType().getAnnotation(RequestPlataforma.class);
+            if (checkPlataforma(requestMethod, request.getPlataforma())) {
+                mapParam.put("plataforma", requestMethod.value());
+                Method method = curAnnotation.annotationType().getMethod("path");
+                mapParam.put("path", method.invoke(curAnnotation));
+            }
+        }
+        if (mapParam.size()==0) {
+            throw new TypeMismatchException();
+        }
+        for (Annotation curAnnotation : arg.getAnnotations()) {
             RequestParam requestParam = curAnnotation.annotationType().getAnnotation(RequestParam.class);
-//            if (subA.value().equals(escopo)) {
-            if (requestParam!=null) {
-                for (Method methodRequest :requestParam.getClass().getDeclaredMethods()) {
+            if (requestParam != null && checkPlataforma(requestParam, request.getPlataforma())) {
+                for (Method methodRequest : requestParam.getClass().getDeclaredMethods()) {
                     Optional<Method> methodCurAnnotaion = Stream.of(curAnnotation.getClass().getDeclaredMethods())
-                        .filter(m2->m2.getName().equals(methodRequest.getName()) && m2.getParameterCount()==0)
+                        .filter(m2 -> m2.getName().equals(methodRequest.getName()) && m2.getParameterCount() == 0)
                         .findFirst();
                     if (methodCurAnnotaion.isPresent()) {
                         mapParam.put(methodRequest.getName(),
@@ -50,19 +59,27 @@ public class TrataParam {
                 }
             }
         }
-        this.requestMethod = arg.getDeclaringExecutable().getDeclaredAnnotation(RequestMethod.class);
-        if (mapParam.size()>0) {
-            nomeArg = Geral.coalesce2((String) mapParam.get("alias"),arg.getName());
+        if (mapParam.size() > 0) {
+            nomeArg = Geral.coalesce2((String) mapParam.get("alias"), arg.getName());
         } else {
             nomeArg = arg.getName();
         }
         classArg = arg.getType();
+        this.setArgValue(request.getQueryParam(nomeArg));
+    }
+
+    private Boolean checkPlataforma(Annotation annotation, String plataforma) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method methodPlataforma = annotation.annotationType().getDeclaredMethod("value");
+        if (methodPlataforma==null) {
+            return false;
+        } else {
+            return ((String) methodPlataforma.invoke(annotation)).equals(plataforma);
+        }
+    }
 
 
-
-
-
-
+//    public TrataParam(Parameter arg, Request request) throws InvocationTargetException, IllegalAccessException {
+//            this.arg = arg;
 //        this.requestParam = arg.getAnnotation(RequestParam.class);
 //        this.requestMethod = arg.getDeclaringExecutable().getDeclaredAnnotation(RequestMethod.class);
 //        if (requestParam!=null) {
@@ -73,7 +90,7 @@ public class TrataParam {
 //            nomeArg = arg.getName();
 //            classArg = arg.getType();
 //        }
-    }
+//    }
 
     public Parameter getArg() {
         return arg;
@@ -101,8 +118,8 @@ public class TrataParam {
                 && Geral.coalesce2(mapParam.get("from"))!=null) {
             String strConversor = ((String) mapParam.get("convert")).replaceAll("/",".");
             String strConversorMetodo = strConversor.substring(strConversor.lastIndexOf(".")+1);
-            if (requestMethod!=null) {
-                strConversor = requestMethod.path().replaceAll("/", ".")+"."+strConversor;
+            if (mapParam.get("path")!=null) {
+                strConversor = ((String)mapParam.get("path")).replaceAll("/", ".")+"."+strConversor;
             }
             Class<?> conversorClass = Class.forName(strConversor.substring(0,strConversor.lastIndexOf(".")));
 
@@ -120,7 +137,7 @@ public class TrataParam {
         return mapParam;
     }
 
-    //    // seta o valor e tipo do parametro a ser executado a partir do parametro da requisição
+//    // seta o valor e tipo do parametro a ser executado a partir do parametro da requisição
 //    public void setArgValue(Object param) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException {
 //        if (param!=null && requestParam!=null && requestParam.convert().length()>0) {
 //            String strConversor = requestParam.convert().replaceAll("/",".");
